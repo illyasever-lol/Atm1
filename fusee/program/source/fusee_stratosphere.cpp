@@ -177,6 +177,12 @@ namespace ams::nxboot {
             FsVersion_18_1_0,
             FsVersion_18_1_0_Exfat,
 
+            FsVersion_19_0_0,
+            FsVersion_19_0_0_Exfat,
+
+            FsVersion_20_0_0,
+            FsVersion_20_0_0_Exfat,
+
             FsVersion_Count,
         };
 
@@ -266,6 +272,12 @@ namespace ams::nxboot {
 
             { 0xA3, 0x39, 0xF0, 0x1C, 0x95, 0xBF, 0xA7, 0x68 }, /* FsVersion_18_1_0 */
             { 0x20, 0x4C, 0xBA, 0x86, 0xDE, 0x08, 0x44, 0x6A }, /* FsVersion_18_1_0_Exfat */
+
+            { 0xD9, 0x4C, 0x68, 0x15, 0xF8, 0xF5, 0x0A, 0x20 }, /* FsVersion_19_0_0 */
+            { 0xED, 0xA8, 0x78, 0x68, 0xA4, 0x49, 0x07, 0x50 }, /* FsVersion_19_0_0_Exfat */
+
+            { 0x63, 0x54, 0x96, 0x9E, 0x60, 0xA7, 0x97, 0x7B }, /* FsVersion_20_0_0 */
+            { 0x47, 0x41, 0x07, 0x10, 0x65, 0x4F, 0xA4, 0x3F }, /* FsVersion_20_0_0_Exfat */
         };
 
         const InitialProcessBinaryHeader *FindInitialProcessBinary(const pkg2::Package2Header *header, const u8 *data, ams::TargetFirmware target_firmware) {
@@ -493,10 +505,6 @@ namespace ams::nxboot {
             0xE0, 0x03, 0x1F, 0x2A,
         };
 
-        constexpr const u8 NoNcaHeaderSignatureCheckPatch2[] = {
-            0x1E, 0x00, 0x00, 0x14,
-        };
-
         void AddNoNcaHeaderSignatureCheckPatches(InitialProcessMeta *fs_meta, FsVersion fs_version) {
             switch (fs_version) {
                 case FsVersion_1_0_0:
@@ -564,7 +572,7 @@ namespace ams::nxboot {
                 case FsVersion_6_0_0:
                     AddPatch(fs_meta, 0x071334, NoNcaHeaderSignatureCheckPatch1, sizeof(NoNcaHeaderSignatureCheckPatch1));
                     AddPatch(fs_meta, 0x0713A8, NoNcaHeaderSignatureCheckPatch1, sizeof(NoNcaHeaderSignatureCheckPatch1));
-                    AddPatch(fs_meta, 0x081884, NoNcaHeaderSignatureCheckPatch1, sizeof(NoNcaHeaderSignatureCheckPatch1));
+                    AddPatch(fs_meta, 0x076184, NoNcaHeaderSignatureCheckPatch1, sizeof(NoNcaHeaderSignatureCheckPatch1));
                     AddPatch(fs_meta, 0x0EB18C, NoNcaHeaderSignatureCheckPatch0, sizeof(NoNcaHeaderSignatureCheckPatch0));
                     break;
                 case FsVersion_6_0_0_Exfat:
@@ -699,13 +707,17 @@ namespace ams::nxboot {
                 case FsVersion_18_1_0:
                 case FsVersion_18_1_0_Exfat:
                     AddPatch(fs_meta, 0x0246F4, NoNcaHeaderSignatureCheckPatch0, sizeof(NoNcaHeaderSignatureCheckPatch0));
-                    AddPatch(fs_meta, 0x0744BC, NoNcaHeaderSignatureCheckPatch1, sizeof(NoNcaHeaderSignatureCheckPatch1));
+                    AddPatch(fs_meta, 0x0744BC, NoNcaHeaderSignatureCheckPatch0, sizeof(NoNcaHeaderSignatureCheckPatch1));
                     break;
                 case FsVersion_19_0_0:
                 case FsVersion_19_0_0_Exfat:
                     AddPatch(fs_meta, 0x021578, NoNcaHeaderSignatureCheckPatch0, sizeof(NoNcaHeaderSignatureCheckPatch0));
                     AddPatch(fs_meta, 0x0746A0, NoNcaHeaderSignatureCheckPatch1, sizeof(NoNcaHeaderSignatureCheckPatch1));
-                    AddPatch(fs_meta, 0x074624, NoNcaHeaderSignatureCheckPatch2, sizeof(NoNcaHeaderSignatureCheckPatch2));
+                    break;
+                case FsVersion_20_0_0:
+                case FsVersion_20_0_0_Exfat:
+                    AddPatch(fs_meta, 0x023C88, NoNcaHeaderSignatureCheckPatch0, sizeof(NoNcaHeaderSignatureCheckPatch0));
+                    AddPatch(fs_meta, 0x07A880, NoNcaHeaderSignatureCheckPatch1, sizeof(NoNcaHeaderSignatureCheckPatch1));
                     break;
                 default:
                     break;
@@ -871,6 +883,26 @@ namespace ams::nxboot {
                 case FsVersion_18_1_0_Exfat:
                     AddPatch(fs_meta, 0x195FD9, NogcPatch0, sizeof(NogcPatch0));
                     AddPatch(fs_meta, 0x16FBE0, NogcPatch1, sizeof(NogcPatch1));
+                    break;
+                case FsVersion_19_0_0:
+                    AddPatch(fs_meta, 0x195C75, NogcPatch0, sizeof(NogcPatch0));
+                    AddPatch(fs_meta, 0x195E75, NogcPatch0, sizeof(NogcPatch0));
+                    AddPatch(fs_meta, 0x16F170, NogcPatch1, sizeof(NogcPatch1));
+                    break;
+                case FsVersion_19_0_0_Exfat:
+                    AddPatch(fs_meta, 0x1A14A5, NogcPatch0, sizeof(NogcPatch0));
+                    AddPatch(fs_meta, 0x1A16A5, NogcPatch0, sizeof(NogcPatch0));
+                    AddPatch(fs_meta, 0x17A9A0, NogcPatch1, sizeof(NogcPatch1));
+                    break;
+                case FsVersion_20_0_0:
+                    AddPatch(fs_meta, 0x1A7E25, NogcPatch0, sizeof(NogcPatch0));
+                    AddPatch(fs_meta, 0x1A8025, NogcPatch0, sizeof(NogcPatch0));
+                    AddPatch(fs_meta, 0x17C250, NogcPatch1, sizeof(NogcPatch1));
+                    break;
+                case FsVersion_20_0_0_Exfat:
+                    AddPatch(fs_meta, 0x1B3745, NogcPatch0, sizeof(NogcPatch0));
+                    AddPatch(fs_meta, 0x1B3945, NogcPatch0, sizeof(NogcPatch0));
+                    AddPatch(fs_meta, 0x187B70, NogcPatch1, sizeof(NogcPatch1));
                     break;
                 default:
                     break;
@@ -1065,7 +1097,7 @@ namespace ams::nxboot {
             }
 
             AddNoNcaHeaderSignatureCheckPatches(fs_meta, fs_version);
-
+            
             /* TODO ams.tma2: add mount_host patches. */
         }
 

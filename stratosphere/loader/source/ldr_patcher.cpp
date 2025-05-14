@@ -107,10 +107,10 @@ namespace ams::ldr {
             const EmbeddedPatchEntry *entries;
         };
 
+        #include "ldr_embedded_usb_patches.inc"
         #include "ldr_embedded_es_patches.inc"
         #include "ldr_embedded_nifm_patches.inc"
         #include "ldr_embedded_nim_patches.inc"
-        #include "ldr_embedded_usb_patches.inc"
 
     }
 
@@ -143,7 +143,6 @@ namespace ams::ldr {
                 }
             }
         }
-
         for (const auto &patch : DisableTicketVerificationPatches) {
             if (std::memcmp(std::addressof(patch.module_id), std::addressof(module_id), sizeof(module_id)) == 0) {
                 for (size_t i = 0; i < patch.num_entries; ++i) {
@@ -177,4 +176,5 @@ namespace ams::ldr {
             }
         }
     }
+
 }
